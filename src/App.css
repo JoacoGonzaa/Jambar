@@ -1,0 +1,678 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fcf8f5;
+  color: #4a3b32;
+  margin: 0;
+  padding: 20px;
+}
+
+.container-wide {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+h2 {
+  text-align: center;
+  color: #c59368;
+  margin-bottom: 30px;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .grid-layout { grid-template-columns: 1fr; }
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #6b584c;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #eaddcf;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+/* Rejilla de servicios con foto */
+.servicios-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.servicio-card {
+  border: 2px solid #f0e6dd;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+}
+
+.servicio-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.servicio-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.servicio-info h3 {
+  margin: 0 font-size 15px;
+  color: #4a3b32;
+}
+
+.servicio-info p {
+  margin: 5px 0 0;
+  color: #c59368;
+  font-weight: bold;
+}
+
+.servicio-card.selected {
+  border-color: #c59368;
+  background-color: #fdf6f0;
+  transform: scale(1.02);
+}
+
+/* Rejilla de Horas */
+.horas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.hora-btn {
+  padding: 10px;
+  background: white;
+  border: 1px solid #eaddcf;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.hora-btn.active {
+  background: #c59368;
+  color: white;
+  border-color: #c59368;
+}
+
+.hora-btn.ocupada {
+  background: #ebebeb;
+  color: #aaaaaa;
+  cursor: not-allowed;
+  border-color: #dddddd;
+}
+
+/* Resumen y Botón */
+.resumen {
+  background: #fdf6f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c59368;
+}
+
+.resumen p { margin: 5px 0; }
+.abono-txt { color: #b5651d; }
+
+.btn-principal {
+  width: 100%;
+  padding: 14px;
+  background: #c59368;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-principal:hover { background: #ab7950; }
+
+/* Parche estético para el calendario */
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.react-calendar {
+  border-radius: 8px;
+  border: 1px solid #eaddcf !important;
+  font-family: inherit;
+}
+
+/* Barra del Administrador */
+.admin-toggle-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0e6dd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.toggle-btn {
+  background-color: #4a3b32;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.toggle-btn:hover { background-color: #6b584c; }
+
+/* Grid de administración horaria */
+/* Estilos para las tarjetas de hora en el Panel de Administración */
+.horas-grid-admin {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.admin-hora-card {
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+/* Estado Habilitado (Verde) */
+.admin-hora-card.abierta {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border-color: #c3e6cb !important;
+}
+
+/* Estado Bloqueado (Gris) */
+.admin-hora-card.cerrada {
+  background-color: #e2e3e5 !important;
+  color: #383d41 !important;
+  border-color: #d6d8db !important;
+}
+
+.instruccion-admin {
+  font-size: 14px;
+  color: #555;
+  background-color: #e9ecef;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+.no-horas {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+
+
+.btn-admin-action {
+  flex: 1;
+  padding: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: white;
+}
+.btn-admin-action.habilitar {
+  background-color: #28a745;
+}
+.btn-admin-action.habilitar:hover {
+  background-color: #218838;
+}
+.btn-admin-action.bloquear {
+  background-color: #dc3545;
+}
+.btn-admin-action.bloquear:hover {
+  background-color: #c82333;
+}
+.btn-admin-action:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Estados del Administrador Sencillo */
+.admin-hora-card.abierta-verde {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border-color: #c3e6cb !important;
+}
+
+.admin-hora-card.cerrada-roja {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  border-color: #f5c6cb !important;
+}
+
+.form-nuevo-servicio {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fcf8f5;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eddcd2;
+}
+
+.admin-servicios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.admin-servicio-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.admin-servicio-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.admin-servicio-item .info {
+  flex: 1;
+}
+
+.admin-servicio-item h4 {
+  margin: 0 0 4px 0;
+}
+
+.admin-servicio-item p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.btn-eliminar-servicio {
+  background-color: #fff0f1;
+  color: #d9534f;
+  border: 1px solid #d9534f;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-eliminar-servicio:hover {
+  background-color: #d9534f;
+  color: white;
+}
+
+
+
+/* --- ESTILOS DE LA PÁGINA CLIENTE PREMIUM --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.beauty-container {
+  font-family: 'Poppins', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  color: #333;
+}
+
+.beauty-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.beauty-header h1 {
+  font-size: 2.5rem;
+  color: #4a3b32;
+  margin-bottom: 10px;
+}
+
+.beauty-header p {
+  color: #7a6f66;
+  font-size: 1.1rem;
+}
+
+.beauty-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .beauty-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0eae5;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #4a3b32;
+  margin-bottom: 15px;
+}
+
+.sub-title {
+  display: block;
+  font-size: 1rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.beauty-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid #e2d7cd;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.beauty-input:focus {
+  outline: none;
+  border-color: #bfa38a;
+}
+
+/* Grilla de Servicios Estética */
+.beauty-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.beauty-service-card {
+  background: #fff;
+  border: 2px solid #f0eae5;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.beauty-service-card:hover {
+  transform: scale(1.03);
+  border-color: #bfa38a;
+}
+
+.beauty-service-card.selected {
+  border-color: #28a745;
+  background-color: #f4faf4;
+}
+
+.beauty-service-card .image-container {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  background: #f8f8f8;
+}
+
+.beauty-service-card .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge-selected {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #28a745;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.info-container {
+  padding: 12px;
+  text-align: center;
+}
+
+.info-container h3 {
+  font-size: 0.95rem;
+  margin: 0 0 6px 0;
+  color: #333;
+}
+
+.info-container .price {
+  font-weight: bold;
+  color: #bfa38a;
+  margin: 0;
+}
+
+/* Horas */
+.beauty-hours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.beauty-hora-btn {
+  padding: 10px;
+  border: 2px solid #e2d7cd;
+  background: #fff;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.beauty-hora-btn:hover {
+  border-color: #bfa38a;
+  background: #fcfbfa;
+}
+
+.beauty-hora-btn.active {
+  background: #4a3b32;
+  color: white;
+  border-color: #4a3b32;
+}
+
+/* Carrito Dinámico */
+.cart-section {
+  background: #fdfbf9;
+  border: 2px solid #f5eee8;
+}
+
+.empty-cart-text {
+  color: #9c8e82;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.cart-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.95rem;
+}
+
+.cart-item-price {
+  font-weight: 500;
+}
+
+.cart-divider {
+  border-top: 1px dashed #e2d7cd;
+  margin: 15px 0;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+
+.abono-highlight {
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  margin-top: 10px;
+}
+
+.abono-footnote {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 6px 0 0 0;
+}
+
+/* Botón Final */
+.beauty-btn-submit {
+  width: 100%;
+  padding: 15px;
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.beauty-btn-submit:hover:not(:disabled) {
+  background: #20ba59;
+  transform: translateY(-1px);
+}
+
+.beauty-btn-submit:disabled {
+  background: #c2cbd2;
+  cursor: not-allowed;
+}
+
+.beauty-alert-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* --- NUEVOS ESTILOS PARA EL LOGO Y ANIMACIONES --- */
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.beauty-logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;         /* Hace el logo perfectamente circular */
+  object-fit: cover;          /* Evita que la imagen se deforme */
+  border: 4px solid #ffffff;  /* Borde blanco elegante estilo salón */
+  box-shadow: 0 6px 15px rgba(74, 59, 50, 0.15); /* Sombra suave bronce/marrón */
+  background-color: #ffffff;
+  transition: transform 0.4s ease;
+}
+
+/* Efecto interactivo si pasan el mouse por el logo */
+.beauty-logo:hover {
+  transform: scale(1.05) rotate(3deg);
+}
+
+/* Animación sutil de entrada para toda la página */
+.fading-in {
+  animation: smoothFade 0.8s ease-out forwards;
+}
+
+@keyframes smoothFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mejoras visuales adicionales en los bordes y calendarios */
+.react-calendar {
+  border: none !important;
+  font-family: 'Poppins', sans-serif !important;
+  width: 100% !important;
+  background: #fdfbf9 !important;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.react-calendar__tile--active {
+  background: #4a3b32 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.react-calendar__tile--now {
+  background: #e2d7cd !important;
+  border-radius: 8px;
+}
