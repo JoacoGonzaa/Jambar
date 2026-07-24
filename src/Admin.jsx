@@ -30,12 +30,20 @@ export default function Admin() {
   // --- 🔄 FUNCIONES DE CARGA DE DATOS ---
 
   const cargarCitasYBloqueos = async () => {
-    const fechaStr = obtenerFechaString(fechaSeleccionada);
-    try {
-      const res = await fetch(`${apiURL}/api/admin/bloqueos?fecha=${fechaStr}`);
-      if (res.ok) setCitasDelDia(await res.json());
-    } catch (e) { console.error(e); }
-  };
+  const fechaStr = obtenerFechaString(fechaSeleccionada);
+  try {
+    const res = await fetch(`${apiURL}/api/admin/bloqueos?fecha=${fechaStr}`);
+    if (res.ok) {
+      const data = await res.json();
+      setCitasDelDia(Array.isArray(data) ? data : []);
+    } else {
+      setCitasDelDia([]);
+    }
+  } catch (e) {
+    console.error(e);
+    setCitasDelDia([]);
+  }
+};
 
   const cargarServicios = async () => {
     try {
@@ -45,11 +53,20 @@ export default function Admin() {
   };
 
   const cargarHorarios = async () => {
-    try {
-      const res = await fetch(`${apiURL}/api/admin/horarios`);
-      if (res.ok) setHorarios(await res.json());
-    } catch (e) { console.error(e); }
-  };
+  try {
+    const res = await fetch(`${apiURL}/api/admin/horarios`);
+    if (res.ok) {
+      const data = await res.json();
+      // Si la API responde con un arreglo lo guardamos; si no, dejamos lista vacía []
+      setHorarios(Array.isArray(data) ? data : []);
+    } else {
+      setHorarios([]);
+    }
+  } catch (e) {
+    console.error(e);
+    setHorarios([]);
+  }
+};
 
   useEffect(() => {
     cargarCitasYBloqueos();
