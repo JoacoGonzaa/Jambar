@@ -10,7 +10,7 @@ export default function App() {
         <Route path="/" element={<Cliente />} />
         
         {/* La ruta secreta exclusiva para el administrador */}
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/colocolo" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   );

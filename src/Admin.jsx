@@ -3,18 +3,22 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './App.css';
 
-const HORAS_JORNADA = ['09:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00'];
-
 export default function Admin() {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
   const [citasDelDia, setCitasDelDia] = useState([]);
   const [servicios, setServicios] = useState([]);
 
-  // Estados del nuevo formulario de servicios
+  // --- ⏰ NUENOS ESTADOS PARA GESTIÓN DE HORARIOS ---
+  const [horarios, setHorarios] = useState([]);
+  const [nuevaHora, setNuevaHora] = useState('');
+
+  // Estados del formulario de servicios
   const [nombreServicio, setNombreServicio] = useState('');
   const [precioServicio, setPrecioServicio] = useState('');
   const [fotoServicio, setFotoServicio] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
+
+  const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
   const obtenerFechaString = (dateObj) => {
     const año = dateObj.getFullYear();
@@ -23,10 +27,11 @@ export default function Admin() {
     return `${año}-${mes}-${dia}`;
   };
 
+  // --- 🔄 FUNCIONES DE CARGA DE DATOS ---
+
   const cargarCitasYBloqueos = async () => {
     const fechaStr = obtenerFechaString(fechaSeleccionada);
     try {
-      const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(`${apiURL}/api/admin/bloqueos?fecha=${fechaStr}`);
       if (res.ok) setCitasDelDia(await res.json());
     } catch (e) { console.error(e); }
@@ -34,22 +39,59 @@ export default function Admin() {
 
   const cargarServicios = async () => {
     try {
-      const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(`${apiURL}/api/servicios`);
       if (res.ok) setServicios(await res.json());
+    } catch (e) { console.error(e); }
+  };
+
+  const cargarHorarios = async () => {
+    try {
+      const res = await fetch(`${apiURL}/api/admin/horarios`);
+      if (res.ok) setHorarios(await res.json());
     } catch (e) { console.error(e); }
   };
 
   useEffect(() => {
     cargarCitasYBloqueos();
     cargarServicios();
+    cargarHorarios();
   }, [fechaSeleccionada]);
+
+  // --- ⏰ GESTIÓN DE HORARIOS (AGREGAR / ELIMINAR) ---
+
+  const handleAgregarHorario = async (e) => {
+    e.preventDefault();
+    if (!nuevaHora) return;
+    try {
+      const res = await fetch(`${apiURL}/api/admin/horarios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hora: nuevaHora })
+      });
+      if (res.ok) {
+        setNuevaHora('');
+        cargarHorarios();
+      } else {
+        const errorData = await res.json();
+        alert(errorData.detail || "Error al agregar horario");
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  const handleEliminarHorario = async (id) => {
+    if (!confirm("¿Seguro que deseas eliminar este bloque de hora?")) return;
+    try {
+      const res = await fetch(`${apiURL}/api/admin/horarios/${id}`, { method: 'DELETE' });
+      if (res.ok) cargarHorarios();
+    } catch (e) { console.error(e); }
+  };
+
+  // --- 📅 BLOQUEO MANUAL DE HORAS ---
 
   const toggleBloqueoHora = async (hora) => {
     const fechaStr = obtenerFechaString(fechaSeleccionada);
     const estaOcupada = citasDelDia.some(c => c.fecha_hora.startsWith(`${fechaStr}T${hora}`));
     try {
-      const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(`${apiURL}/api/admin/gestionar-bloqueo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,6 +100,8 @@ export default function Admin() {
       if (res.ok) cargarCitasYBloqueos();
     } catch (e) { console.error(e); }
   };
+
+  // --- 💅 CREAR Y ELIMINAR SERVICIOS ---
 
   const handleCrearServicio = async (e) => {
     e.preventDefault();
@@ -71,25 +115,19 @@ export default function Admin() {
     formData.append('imagen', fotoServicio); 
 
     try {
-      const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(`${apiURL}/api/admin/servicios`, {
         method: 'POST',
         body: formData 
       });
 
       if (res.ok) {
-        const resultado = await res.json();
-        console.log("Servicio creado con éxito:", resultado);
-        
         setNombreServicio('');
         setPrecioServicio('');
         setFotoServicio(null);
         e.target.reset(); 
-        
         cargarServicios();
       } else {
         const errorData = await res.json();
-        console.error("El servidor rechazó el servicio:", errorData);
         alert("Error del servidor: " + JSON.stringify(errorData.detail));
       }
     } catch (e) {
@@ -102,7 +140,6 @@ export default function Admin() {
   const handleEliminarServicio = async (id) => {
     if (!confirm("¿Seguro que deseas eliminar este servicio?")) return;
     try {
-      const apiURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(`${apiURL}/api/admin/servicios/${id}`, { method: 'DELETE' });
       if (res.ok) cargarServicios();
     } catch (e) { console.error(e); }
@@ -112,21 +149,31 @@ export default function Admin() {
     <div className="container-wide">
       <h2>🔑 Panel de Control General</h2>
       
+      {/* SECCIÓN 1: DÍA Y AGENDA DE BLOQUEOS */}
       <div className="grid-layout">
         <div className="seccion">
           <label>1. Elige la fecha a revisar o bloquear:</label>
-          <div className="calendar-wrapper"><Calendar onChange={setFechaSeleccionada} value={fechaSeleccionada} /></div>
+          <div className="calendar-wrapper">
+            <Calendar onChange={setFechaSeleccionada} value={fechaSeleccionada} />
+          </div>
         </div>
+
         <div className="seccion">
           <label>2. Estado de la agenda para el {fechaSeleccionada.toLocaleDateString()}:</label>
           <p className="instruccion-admin">🟢 Verde = Libre | 🔴 Rojo = Ocupada / Bloqueada</p>
           <div className="horas-grid-admin">
-            {HORAS_JORNADA.map(hora => {
+            {horarios.map(h => {
+              const hora = h.hora;
               const fechaStr = obtenerFechaString(fechaSeleccionada);
               const citaEncontrada = citasDelDia.find(c => c.fecha_hora.startsWith(`${fechaStr}T${hora}`));
               const estaOcupada = !!citaEncontrada;
               return (
-                <button type="button" key={hora} className={`admin-hora-card ${estaOcupada ? 'cerrada-roja' : 'abierta-verde'}`} onClick={() => toggleBloqueoHora(hora)}>
+                <button 
+                  type="button" 
+                  key={h.id} 
+                  className={`admin-hora-card ${estaOcupada ? 'cerrada-roja' : 'abierta-verde'}`} 
+                  onClick={() => toggleBloqueoHora(hora)}
+                >
                   {hora} <br />
                   <small>{estaOcupada ? (citaEncontrada.nombre_cliente.includes("BLOQUEADO") ? "Bloqueado Admin" : `Cita: ${citaEncontrada.nombre_cliente}`) : "Libre"}</small>
                 </button>
@@ -138,6 +185,41 @@ export default function Admin() {
 
       <hr style={{ margin: '40px 0', border: '0', borderTop: '1px solid #ccc' }} />
 
+      {/* SECCIÓN 2: GESTIÓN DE HORARIOS DISPONIBLES */}
+      <div className="seccion" style={{ marginBottom: '40px' }}>
+        <h3>⏰ Configurar Bloques de Horarios de Trabajo</h3>
+        <p className="instruccion-admin">Agrega o elimina los horarios en los que prestas servicios (afectará lo que ven los clientes).</p>
+        
+        <form onSubmit={handleAgregarHorario} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '20px' }}>
+          <input 
+            type="time" 
+            value={nuevaHora} 
+            onChange={(e) => setNuevaHora(e.target.value)} 
+            required 
+            style={{ padding: '8px', fontSize: '1rem' }}
+          />
+          <button type="submit" className="btn-principal" style={{ padding: '8px 15px' }}>+ Agregar Horario</button>
+        </form>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {horarios.map(h => (
+            <span key={h.id} style={{ background: '#f0f0f0', border: '1px solid #ccc', padding: '6px 12px', borderRadius: '20px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <strong>{h.hora}</strong>
+              <button 
+                type="button" 
+                onClick={() => handleEliminarHorario(h.id)} 
+                style={{ background: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                ✕
+              </button>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <hr style={{ margin: '40px 0', border: '0', borderTop: '1px solid #ccc' }} />
+
+      {/* SECCIÓN 3: CATÁLOGO DE SERVICIOS */}
       <div className="grid-layout">
         <div className="seccion">
           <h3>✨ Agregar Nuevo Servicio</h3>
