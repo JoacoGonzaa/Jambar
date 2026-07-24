@@ -60,23 +60,30 @@ export default function Admin() {
   // --- ⏰ GESTIÓN DE HORARIOS (AGREGAR / ELIMINAR) ---
 
   const handleAgregarHorario = async (e) => {
-    e.preventDefault();
-    if (!nuevaHora) return;
-    try {
-      const res = await fetch(`${apiURL}/api/admin/horarios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hora: nuevaHora })
-      });
-      if (res.ok) {
-        setNuevaHora('');
-        cargarHorarios();
-      } else {
-        const errorData = await res.json();
-        alert(errorData.detail || "Error al agregar horario");
-      }
-    } catch (e) { console.error(e); }
-  };
+  e.preventDefault();
+  if (!nuevaHora) return;
+  
+  try {
+    const res = await fetch(`${apiURL}/api/admin/horarios`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hora: nuevaHora })
+    });
+
+    if (res.ok) {
+      setNuevaHora('');
+      cargarHorarios();
+      alert("¡Horario agregado con éxito!");
+    } else {
+      const errorData = await res.json();
+      console.error("Error del servidor al guardar hora:", errorData);
+      alert("No se pudo guardar: " + (errorData.detail || JSON.stringify(errorData)));
+    }
+  } catch (e) {
+    console.error("Error de conexión:", e);
+    alert("Error de conexión con la API");
+  }
+};
 
   const handleEliminarHorario = async (id) => {
     if (!confirm("¿Seguro que deseas eliminar este bloque de hora?")) return;

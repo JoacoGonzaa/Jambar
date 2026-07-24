@@ -69,9 +69,9 @@ export default function Cliente() {
         setStatus({ loading: false, error: null, success: true });
         setHorasDisponiblesCliente(horasDisponiblesCliente.filter(h => h !== horaSeleccionada));
         
-        const mensajeWa = `¡Hola! Agendé una hora desde la web:\n👤 *Cliente:* ${nombre}\n💅 *Servicios:* ${nombresServicios}\n📅 *Fecha:* ${fechaSeleccionada.toLocaleDateString()}\n⏰ *Hora:* ${horaSeleccionada}\n💵 *Total:* $${totalCosto.toLocaleString()}\n💳 *Abono (20%):* $${abonoRequerido.toLocaleString()}`;
+        const mensajeWa = `¡Hola! Agendé una hora desde la web:\n *Cliente:* ${nombre}\n *Servicios:* ${nombresServicios}\n *Fecha:* ${fechaSeleccionada.toLocaleDateString()}\n *Hora:* ${horaSeleccionada}\n *Total:* $${totalCosto.toLocaleString()}\n *Abono (20%):* $${abonoRequerido.toLocaleString()}`;
         
-        window.location.href = `https://wa.me/56964500721?text=${encodeURIComponent(mensajeWa)}`;
+        window.location.href = `https://wa.me/56984950388?text=${encodeURIComponent(mensajeWa)}`;
       } else {
         const err = await respuesta.json();
         setStatus({ loading: false, error: err.detail, success: false });
